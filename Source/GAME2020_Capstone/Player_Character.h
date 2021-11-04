@@ -17,11 +17,15 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* mThirdPersonCamera;
 
+private:
+	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void MoveForward(float value);
 	void MoveRight(float value);
+	virtual void Jump() override;
 
 public:
 	// Sets default values for this character's properties
@@ -30,5 +34,4 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };
