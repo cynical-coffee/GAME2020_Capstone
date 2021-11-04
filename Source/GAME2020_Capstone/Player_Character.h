@@ -10,23 +10,24 @@ UCLASS()
 class GAME2020_CAPSTONE_API APlayer_Character : public ACharacter
 {
 	GENERATED_BODY()
+
+public:
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* mThirdPersonSpringArm;
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent* mThirdPersonCamera;
 
-public:
-	// Sets default values for this character's properties
-	APlayer_Character();
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void MoveForward(float value);
+	void MoveRight(float value);
 
-public:	
+public:
+	// Sets default values for this character's properties
+	APlayer_Character();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
