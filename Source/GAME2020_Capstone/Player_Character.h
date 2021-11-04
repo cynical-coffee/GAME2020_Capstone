@@ -10,6 +10,10 @@ UCLASS()
 class GAME2020_CAPSTONE_API APlayer_Character : public ACharacter
 {
 	GENERATED_BODY()
+	UPROPERTY(VisibleAnywhere)
+	class USpringArmComponent* mThirdPersonSpringArm;
+	UPROPERTY(VisibleAnywhere)
+	class UCameraComponent* mThirdPersonCamera;
 
 public:
 	// Sets default values for this character's properties

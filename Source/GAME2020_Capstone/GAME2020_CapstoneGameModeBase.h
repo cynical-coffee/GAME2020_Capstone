@@ -13,5 +13,8 @@ UCLASS()
 class GAME2020_CAPSTONE_API AGAME2020_CapstoneGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	AGAME2020_CapstoneGameModeBase();
 };
