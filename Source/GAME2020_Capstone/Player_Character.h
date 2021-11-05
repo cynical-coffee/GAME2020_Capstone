@@ -18,14 +18,17 @@ public:
 	class UCameraComponent* mThirdPersonCamera;
 
 private:
-	
+	int iJumpCount;
+	bool bIsRunning;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void MoveForward(float value);
 	void MoveRight(float value);
+	void ToggleRun();
 	virtual void Jump() override;
+	virtual void Landed(const FHitResult& Hit) override;
 
 public:
 	// Sets default values for this character's properties
@@ -34,4 +37,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	bool GetRunningFlag();
+	int GetJumpCount();
 };

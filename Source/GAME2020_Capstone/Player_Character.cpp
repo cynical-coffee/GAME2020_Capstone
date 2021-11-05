@@ -4,6 +4,7 @@
 #include "Player_Character.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -24,21 +25,39 @@ APlayer_Character::APlayer_Character()
 	// player can receive input
 	AutoReceiveInput = EAutoReceiveInput::Player0;
 
+	GetCapsuleComponent()->SetCapsuleHalfHeight(30.0);
+	GetCapsuleComponent()->SetCapsuleRadius(30.0);
+
+	GetMesh()->SetRelativeLocation(FVector(-10.0, 0.0, -32.0));
+	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
+
 	// Spring Arm
 	mThirdPersonSpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("ThirdPersonSpringArm"));
 	mThirdPersonSpringArm->SetupAttachment(RootComponent);
 	const FRotator rSpringArmRotation(-30.0, 0.0, 0.0);
-	mThirdPersonSpringArm->SetRelativeRotation(rSpringArmRotation);
+	//mThirdPersonSpringArm->SetRelativeRotation(rSpringArmRotation);
 	mThirdPersonSpringArm->bUsePawnControlRotation = true;
+	const FVector mThirdPersonSpringOffset(0.0, 0.0, 250.0);
+	mThirdPersonSpringArm->SocketOffset = mThirdPersonSpringOffset;
 
 	// Third-Person Camera
 	mThirdPersonCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ThirdPersonCamera"));
 	mThirdPersonCamera->SetupAttachment(mThirdPersonSpringArm, USpringArmComponent::SocketName);
 	mThirdPersonCamera->bUsePawnControlRotation = false;
+	const FRotator mCameraRotation(-30.0, 0.0, 0.0);
+	mThirdPersonCamera->SetRelativeRotation(mCameraRotation);
+
 
 	// Player movement values
-	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->MaxWalkSpeed = 250;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 300.0f, 0.0f);
+	GetCharacterMovement()->GravityScale = 2.0f;
+	GetCharacterMovement()->JumpZVelocity = 700.0f;
+
+	// Jump count
+	iJumpCount = 0;
+	bIsRunning = false;
 }
 
 // Called when the game starts or when spawned
@@ -71,16 +90,46 @@ void APlayer_Character::MoveRight(float value)
 	}
 }
 
+void APlayer_Character::ToggleRun()
+{
+	if (!bIsRunning)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 700;
+		bIsRunning = true;
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Running")));
+	}
+	else if (bIsRunning)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 250;
+		bIsRunning = false;
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Walking")));
+	}
+
+}
+
 void APlayer_Character::Jump()
 {
 	Super::Jump();
+	JumpMaxCount = 2;
+	iJumpCount++;
+	/*const FVector vLaunchVel(0.0, 0.0, 800.0);
+	if (iJumpCount == 2)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Double Jump")));
+		LaunchCharacter(vLaunchVel, false, false);
+	}*/
+}
+
+void APlayer_Character::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	iJumpCount = 0;
 }
 
 // Called every frame
 void APlayer_Character::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -91,11 +140,23 @@ void APlayer_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayer_Character::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayer_Character::MoveRight);
 
+	// Toggle Run
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &APlayer_Character::ToggleRun);
+
 	// Jump bindings
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayer_Character::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &APlayer_Character::StopJumping);
 
 	// Camera bindings
 	PlayerInputComponent->BindAxis("Turn", this, &APlayer_Character::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayer_Character::AddControllerPitchInput);
+}
+
+bool APlayer_Character::GetRunningFlag()
+{
+	return bIsRunning;
+}
+
+int APlayer_Character::GetJumpCount()
+{
+	return iJumpCount;
 }
