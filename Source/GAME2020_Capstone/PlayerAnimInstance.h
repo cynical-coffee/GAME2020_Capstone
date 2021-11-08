@@ -33,6 +33,6 @@ public:
 	bool bIsInAir;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bIsDoubleJumping;
-
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsFallingDown;
 };

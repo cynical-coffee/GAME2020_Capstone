@@ -71,5 +71,14 @@ void UPlayerAnimInstance::UpdateAnimationProperties()
 		{
 			bIsDoubleJumping = false;
 		}
+
+		if (PlayerCharacter->GetVelocity().Z < 0)
+		{
+			bIsFallingDown = true;
+		}
+		else
+		{
+			bIsFallingDown = false;
+		}
 	}
 }
