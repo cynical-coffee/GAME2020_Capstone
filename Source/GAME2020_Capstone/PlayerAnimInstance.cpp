@@ -63,6 +63,7 @@ void UPlayerAnimInstance::UpdateAnimationProperties()
 			bIsInAir = false;
 		}
 
+		// Checks if the player is jumping
 		if (PlayerCharacter->GetJumpCount() > 1)
 		{
 			bIsDoubleJumping = true;
@@ -72,6 +73,7 @@ void UPlayerAnimInstance::UpdateAnimationProperties()
 			bIsDoubleJumping = false;
 		}
 
+		// Check if the player is falling
 		if (PlayerCharacter->GetVelocity().Z < 0)
 		{
 			bIsFallingDown = true;

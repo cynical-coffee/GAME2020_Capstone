@@ -47,7 +47,6 @@ APlayer_Character::APlayer_Character()
 	const FRotator mCameraRotation(-30.0, 0.0, 0.0);
 	mThirdPersonCamera->SetRelativeRotation(mCameraRotation);
 
-
 	// Player movement values
 	GetCharacterMovement()->MaxWalkSpeed = 250;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -104,7 +103,6 @@ void APlayer_Character::ToggleRun()
 		bIsRunning = false;
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Walking")));
 	}
-
 }
 
 void APlayer_Character::Jump()
@@ -112,11 +110,10 @@ void APlayer_Character::Jump()
 	Super::Jump();
 	JumpMaxCount = 2;
 	iJumpCount++;
-	if (iJumpCount == 2)
+	/*if (iJumpCount == 2)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Double Jump")));
-		
-	}
+	}*/
 	/*const FVector vLaunchVel(0.0, 0.0, 800.0);
 	if (iJumpCount == 2)
 	{
